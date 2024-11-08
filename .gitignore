@@ -1,0 +1,7 @@
+# Ignore specific folders
+/Debug
+/.settings
+
+
+# Ignore these files extensions
+*.launch
