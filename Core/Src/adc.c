@@ -21,11 +21,38 @@
 #include "adc.h"
 
 /* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
+#include "tim.h"
 
 ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
+
+volatile uint16_t adc_value=0;
+volatile uint32_t last_time = 0;
+volatile uint8_t  elapsed_time = 0;
+
+
+void __attribute__((optimize("O0")))HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+	if (hadc->Instance == ADC1)
+	{
+		uint32_t current_time = __HAL_TIM_GET_COUNTER(&htim2);
+
+		// Calcular o tempo transcorrido desde a última interrupção (em µs)
+		if (current_time >= last_time)
+		{
+			elapsed_time = current_time - last_time;  // Sem overflow
+		}
+		else
+		{
+			// Caso haja overflow do contador do timer
+			elapsed_time = (0xFFFFFFFF - last_time) + current_time + 1;
+		}
+		// Atualizar o tempo da última interrupção
+		last_time = current_time;
+		HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc_value, 1);
+    }
+}
+/* USER CODE END 0 */
 
 /* ADC1 init function */
 void MX_ADC1_Init(void)
@@ -58,7 +85,7 @@ void MX_ADC1_Init(void)
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
   hadc1.Init.DMAContinuousRequests = DISABLE;
-  hadc1.Init.Overrun = ADC_OVR_DATA_PRESERVED;
+  hadc1.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN;
   hadc1.Init.OversamplingMode = DISABLE;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
   {
@@ -132,7 +159,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     hdma_adc1.Init.MemInc = DMA_MINC_ENABLE;
     hdma_adc1.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
     hdma_adc1.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
-    hdma_adc1.Init.Mode = DMA_CIRCULAR;
+    hdma_adc1.Init.Mode = DMA_NORMAL;
     hdma_adc1.Init.Priority = DMA_PRIORITY_VERY_HIGH;
     if (HAL_DMA_Init(&hdma_adc1) != HAL_OK)
     {

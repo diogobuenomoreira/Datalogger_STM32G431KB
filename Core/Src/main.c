@@ -102,7 +102,10 @@ int main(void)
     Error_Handler();
   }
   /* USER CODE BEGIN 2 */
-
+  HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
+  HAL_Delay(200);
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc_value, 1);
+  HAL_TIM_Base_Start(&htim2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
