@@ -95,17 +95,17 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_ADC1_Init();
-  MX_SPI2_Init();
   MX_USART2_UART_Init();
   MX_TIM2_Init();
+  MX_SPI1_Init();
   if (MX_FATFS_Init() != APP_OK) {
     Error_Handler();
   }
   /* USER CODE BEGIN 2 */
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
   HAL_Delay(200);
-  HAL_TIM_Base_Start(&htim2);
-  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc_value, 1);
+ // HAL_TIM_Base_Start(&htim2);
+ // HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc_value, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
