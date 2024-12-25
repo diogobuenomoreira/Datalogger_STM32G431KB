@@ -29,19 +29,34 @@ extern "C" {
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
 /* USER CODE END Includes */
 
 extern UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN Private defines */
+//#define PRINT_DEBUG_MESSAGES
+
+#ifdef PRINT_DEBUG_MESSAGES
+    #define DEBUG_MESSAGE(message)		printf(message)
+	#define DEBUG_PRINTF(fmt, ...)		printf(fmt, __VA_ARGS__)
+#else
+	#define DEBUG_MESSAGE(message)
+	#define DEBUG_PRINTF(fmt, ...)
+#endif
 
 /* USER CODE END Private defines */
 
 void MX_USART2_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+#ifdef __GNUC__
+  /* With GCC, small printf (option LD Linker->Libraries->Small printf
+     set to 'Yes') calls __io_putchar() */
+int __io_putchar(int ch);
+#else
+int fputc(int ch, FILE *f);
+#endif /* __GNUC__ */
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
