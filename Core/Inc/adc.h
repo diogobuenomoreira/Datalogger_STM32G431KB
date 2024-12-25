@@ -41,7 +41,11 @@ extern volatile uint16_t adc_value;
 void MX_ADC1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+void Set_ADC_Stop_Flag(const int status);
+int Get_ADC_Stop_Flag(void);
+uint32_t Get_Available_Data(void);
+void Update_Read_Index(const uint32_t bytes_written);
+void SD_Write_Task(void);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
