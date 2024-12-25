@@ -50,7 +50,10 @@
 int32_t MX_FATFS_Init(void);
 int32_t MX_FATFS_Process(void);
 /* USER CODE BEGIN EFP */
-
+void SD_Card_Open(void);
+void SD_Card_Close(void);
+void SD_Card_Write(const uint8_t* data, uint32_t length);
+FIL* Get_File(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
